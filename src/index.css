@@ -1,0 +1,351 @@
+/* SCROLLBAR */
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+/* END OF SCROLLBAR */
+
+*, *::after, *::before {
+    box-sizing: border-box;
+    font-family: Roboto;
+    user-select: none;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #D7D7D7;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.right {
+    float: right !important;
+}
+.left {
+    float: left !important;
+}
+
+.header {
+    z-index: 1000;
+    width: 100vw;
+    height: 60px;
+    padding: 15px 10px 10px;
+    background-color: #C4C4C4;
+    color: #000000;
+    font-weight: 600;
+    display: block;
+    position: fixed;
+    float: left;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+}
+.header__title {
+    font-size: 28px;
+    margin-left: 15px;
+    overflow: hidden;
+    min-width: 400px;
+    display: block;
+}
+.header__path {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #7c7c7c;
+    overflow: hidden;
+    display: block;
+}
+@media screen and (max-width: 650px) {
+    .header__path {
+        display: none;
+    }
+}
+.content {
+    width: 100%;
+    height: calc(100% - 60px - 70px);
+    padding: 20px;
+    background-color: #D7D7D7;
+    overflow: auto;
+    float: left;
+    margin-bottom: 130px;
+    margin-top: 60px;
+}
+
+.content--noScrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.content--withSidebar {
+    width: calc(100% - 250px);
+    height: calc(100% - 60px - 120px);
+    transition: 2s;
+    position: relative;
+    padding: 20px;
+    background-color: #D7D7D7;
+    overflow: auto;
+    float: left;
+    margin-bottom: 130px;
+    margin-top: 60px;
+}
+.footer {
+    width: 100vw;
+    height: 140px;
+    background-color: #C4C4C4;
+    display: block;
+    position: fixed;
+    float: left;
+    overflow: hidden;
+    bottom: 0;
+    left: 0;
+    color: #000000;
+    font-weight: 600;
+    padding: 5px 180px 5px 20px;
+}
+
+.footer--author {
+    font-weight: 600;
+    position: absolute;
+    top: 35px;
+    right: 30px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #7c7c7c;
+    overflow: hidden;
+    display: block;
+}
+
+.footer--draft {
+    height: 120px !important;
+}
+
+/* sidebars */
+.sidebar {
+    width: 250px;
+    height: calc(100% - 60px - 120px);
+    padding: 25px;
+    float: left;
+    text-align: left;
+}
+
+.sidebar__element {
+    font-size: 18px;
+    padding: 3px;
+    cursor: pointer;
+}
+
+.sidebar__element--selected {
+    font-weight: bold;
+    font-size: 19px;
+    color: black !important;
+}
+/* status */
+
+.sidebar__element--correct {
+    color: green;
+}
+
+.sidebar__element--warn {
+    font-weight: 800;
+    color: #C54A06;
+}
+
+.sidebar__element--wrong {
+    font-weight: 800;
+    color: #C31323
+}
+
+/* animated sections */
+
+.sections-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    float: left;
+}
+
+.sections {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: 2s;
+}
+
+.section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    padding-right: 5px;
+}
+
+.section__title {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 12px 0;
+}
+
+.section__subtitle {
+    font-size: 18px;
+    font-weight: normal;
+    margin: 10px 0;
+}
+.section__description {
+    margin: 10px 0;
+    display: block;
+}
+.section-textarea {
+    user-select: all !important;
+    background-color: #F0F0F0;
+    border: 0;
+    min-width: 250px;
+    width: 80%;
+    min-height: 250px;
+    display: block;
+    padding: 5px;
+    font-size: 18px;
+    resize: vertical;
+    max-height: 90%;
+}
+.section-textarea--big {
+    width: calc(100% - 10px);
+    height: 561px;
+}
+
+/* END OF animated sections */
+
+.documentPresentation {
+    background-color: white;
+    color: black;
+    padding: 20px;
+    margin: 16px 8px;
+    width: 400px;
+    min-height: 100%;
+    user-select: all;
+    float: left;
+}
+.documentPresentation--small {
+    min-height: 100px;
+}
+
+.documentPresentation__sentence {
+    color: black;
+}
+.documentPresentation__sentence:hover {
+    border: 2px solid black;
+    color: rgb(44, 1, 1) !important;
+}
+.documentPresentation__sentence--thesis {
+    background-color: #EBD3FF;
+}
+.documentPresentation__sentence--arg1 {
+    background-color: #BDFFA8;
+}
+.documentPresentation__sentence--arg2 {
+    background-color: #F5FFA4;
+}
+.documentPresentation__sentence--arg3 {
+    background-color: #b6c3ff;
+}
+.documentPresentation__sentence--ending {
+    background-color: #FFBCA8;
+}
+
+
+.documentPresentation__marker-button {
+    min-width: 60px;
+    height: 30px;
+    border: 1px solid black;
+    margin: 4px 4px;
+    text-align: center;
+    font-size: 18px;
+    cursor: pointer;
+    float: left;
+}
+.documentPresentation__marker-button--selected {
+    border: 3px solid black;
+    font-weight: bold;
+}
+.documentPresentation__marker-button--thesis {
+    background-color: #EBD3FF;
+}
+.documentPresentation__marker-button--arg1 {
+    background-color: #BDFFA8;
+}
+.documentPresentation__marker-button--arg2 {
+    background-color: #F5FFA4;
+}
+.documentPresentation__marker-button--arg3 {
+    background-color: #b6c3ff;
+}
+.documentPresentation__marker-button--ending {
+    background-color: #FFBCA8;
+}
+
+.documentAnalise {
+    width: calc(100% - 500px - 16px - 4px);
+    height: auto;
+    /* background-color: #deeeff; */
+    padding: 20px;
+    margin: 16px 0px;
+    float: left;
+}
+
+.documentAnalise__element {
+    width: 100%;
+    margin: 4px 0;
+    padding-top: 2px;
+    padding-left: 4px;
+    border-left: 3px solid black;
+    overflow: hidden;
+    float: left;
+}
+
+input[type=text], textarea {
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
+    padding: 3px 0px 3px 3px;
+    margin: 5px 1px 3px 0px;
+    border: 1px solid #DDDDDD;
+}
+
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+:focus {
+    outline: 0;
+}
+
+
+.highlight {
+    box-shadow: 0 0 20px 10px yellow;
+}

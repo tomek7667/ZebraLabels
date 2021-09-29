@@ -4,8 +4,8 @@ require('@electron/remote/main').initialize()
 const createWindow = () => {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
-        width: 1024,
-        height: 640,
+        width: 1280,
+        height: 720,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -28,9 +28,7 @@ app.on('ready', createWindow);
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
+    app.quit();
 });
 
 app.on('activate', () => {

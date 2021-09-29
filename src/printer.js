@@ -7,6 +7,22 @@ const { BrowserWindow } = require('@electron/remote');
 let printer = "";
 let win;
 let tempFolderPath = path.join(__dirname, "./../tempPDF").replaceAll(" ", "\\ ");
+let oFont = {
+    'Courier':'Courier',
+    "Courier-Bold": "Courier Bold",
+    "Helvetica-Bold": "Helvetica Bold",
+    'Times-Roman': 'Times New Roman',
+    'Times-Bold': 'Times New Roman - Bold',
+    "src/fonts/arial.ttf": "Arial",
+    "src/fonts/arial-bold.ttf": "Arial Bold",
+    "src/fonts/arial-narrow.ttf": "Arial Narrow",
+    "src/fonts/calibri.ttf": "Calibri",
+    "src/fonts/calibri-bold.ttf": "Calibri Bold",
+    "src/fonts/tahoma.ttf": "Tahoma",
+    "src/fonts/tahoma-bold.ttf": "Tahoma Bold"
+}
+
+
 
 window.addEventListener("DOMContentLoaded", () => {
     console.log("Printer module loaded");
@@ -14,21 +30,52 @@ window.addEventListener("DOMContentLoaded", () => {
     addUserAreaListener()
     addButtonListeners();
     updatePrinter();
+    addSlidersListeners();
+    addFontListeners();
 })
+
+let addFontListeners = () => {
+    if (!localStorage.getItem("fontName") || localStorage.getItem("fontName") === "") localStorage.setItem("fontName", "Courier-Bold");
+    let fontNameLabel = document.getElementById("fontName--label");
+    fontNameLabel.innerText = oFont[localStorage.getItem("fontName")];
+    let fontNameSelect = document.getElementById('fontName--select');
+    fontNameSelect.addEventListener("click", () => {
+        chooseFont().then(() => {
+            fontNameLabel.innerText = oFont[localStorage.getItem("fontName")];
+        });
+    })
+
+}
+
+let chooseFont = async () => {
+    await swal.fire({
+        title: 'Select custom font',
+        input: 'select',
+        inputOptions: {
+            'Fonts': oFont
+        },
+        inputPlaceholder: 'Select a font',
+        showCancelButton: true
+    }).then((res) => {
+        if (res.value === "") {
+            return;
+        }
+        if (res.isConfirmed) localStorage.setItem("fontName", res.value);
+    })
+}
 
 let addUserAreaListener = () => {
     if (!localStorage.getItem("user_input")) localStorage.setItem("user_input", "");
     let div = document.getElementById("user-input");
+    div.value = JSON.parse(localStorage.getItem("user_input"));
     div.addEventListener("input", () => {
         localStorage.setItem("user_input", JSON.stringify(div.value));
     })
 }
 
-let addButtonListeners = () => {
-    let clearButton = document.getElementById("clear-button");
-    let customPrinterButton = document.getElementById("customPrinter-button");
-    let printButton = document.getElementById("print-button");
-    let sizeLabel = document.getElementById("sizeLabel");
+let addSlidersListeners = () => {
+	// font size slider
+	let sizeLabel = document.getElementById("sizeLabel");
     let sizeFontSlider = document.getElementById("fontSize");
     if (localStorage.getItem("fontSize")) {
         sizeLabel.innerText = localStorage.getItem("fontSize");
@@ -40,6 +87,32 @@ let addButtonListeners = () => {
         localStorage.setItem("fontSize", sizeFontSlider.value);
         sizeLabel.innerText = sizeFontSlider.value;
     })
+    // copies amount slider
+    let printLabel = document.getElementById("printLabel");
+    let printAmountSlider = document.getElementById("printAmount");
+    if (localStorage.getItem("printAmount")) {
+    	printLabel.value = localStorage.getItem("printAmount");
+    	printAmountSlider.value = localStorage.getItem("printAmount");
+    } else {
+    	localStorage.setItem("printAmount", printAmountSlider.value);
+	printLabel.value = printAmountSlider.value;
+    }
+    printAmountSlider.addEventListener("input", () => {
+    	localStorage.setItem("printAmount", printAmountSlider.value);
+    	printLabel.value = printAmountSlider.value;
+    })
+    printLabel.addEventListener("input", () => {
+    	if (printLabel.value != "" && printLabel.value > 0) localStorage.setItem("printAmount", printLabel.value);
+    	printAmountSlider.value = localStorage.getItem("printAmount");
+	printLabel.value = printAmountSlider.value
+    })
+    
+}
+
+let addButtonListeners = () => {
+    let clearButton = document.getElementById("clear-button");
+    let customPrinterButton = document.getElementById("customPrinter-button");
+    let printButton = document.getElementById("print-button");
     clearButton.addEventListener("click", () => {
         document.getElementById("user-input").value = "";
         localStorage.setItem("user_input", "");
@@ -48,8 +121,8 @@ let addButtonListeners = () => {
         choosePrinter();
     })
     printButton.addEventListener("click", () => {
-        let tempInput = localStorage.getItem("user_input");
-        if (tempInput.length === 0) {
+        let tempInput = getUserInput();
+        if (!tempInput || tempInput.length === 0 || tempInput === `""`) {
             showWarning("You are trying to print empty label!");
         } else {
             printLabel(tempInput, localStorage.getItem("printerName"), localStorage.getItem("fontSize"));
@@ -82,11 +155,12 @@ let printLabel = (userText, userPrinter, fontSizeValue) => {
     const PostScriptPoint = 2.83464567;
     let doc = new PDFDocument({
         size: [38*PostScriptPoint, 19*PostScriptPoint],
-        margin: 2*PostScriptPoint,
+        //margin: 2,//*PostScriptPoint,
+        margins: { top: 2, left: 2, right: 0, bottom: 0 },
         layout: "portrait"
     });
     doc.fontSize(fontSizeValue);
-    doc.font('Courier-Bold')
+    doc.font(localStorage.getItem("fontName"));
     let PDFPath = tempFolderPath + "/temporaryPDF.pdf";
     for (let labelText of labelsText) {
         doc.text(labelText, {align: "center"});
@@ -100,12 +174,19 @@ let printLabel = (userText, userPrinter, fontSizeValue) => {
             unix:  [
                 "-o sides=one-sided",
                 "-o media=Custom.38x19mm",
+            ],
+            win32: [
+                '-print-settings "fit"'
             ]
+
         }
-        ptp
-            .print(PDFPath, newOptions)
-            .then(r => console.log);
-        showWarning("Your label will now print.", "success");
+        for (let i = 0; i < localStorage.getItem("printAmount"); i++) {
+        	ptp
+            	.print(PDFPath, newOptions)
+            	.then((r) => {
+                    showWarning("Your label will now print.", "success");
+                });
+        }
     })
 }
 
@@ -131,7 +212,7 @@ let choosePrinter = (showCancelButton=true) => {
             if (!showCancelButton) updatePrinter();
             return;
         }
-        localStorage.setItem("printerName", res.value);
+        if (res.isConfirmed) localStorage.setItem("printerName", res.value);
     })
 }
 
@@ -162,6 +243,10 @@ let showWarning = (text, type="warning") => {
         position: 'top-end',
         showConfirmButton: false,
         timer: 2500,
+        iconColor: 'white',
+        customClass: {
+            popup: 'colored-toast'
+        },
         timerProgressBar: true,
         didOpen: (toast) => {
             toast.addEventListener('mouseenter', swal.stopTimer)
@@ -169,7 +254,7 @@ let showWarning = (text, type="warning") => {
         }
     })
 
-    Toast.fire({
+   Toast.fire({
         icon: type,
         title: text
     })

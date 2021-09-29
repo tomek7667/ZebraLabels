@@ -3,10 +3,28 @@
     margin-left: 20px;
 }
 
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.user_input__LabelsAmount {
+	resize: none;
+	font-size: 18px;
+	padding: 8px 10px;
+    background-color: #ffffff;
+    border: 0;
+    transition: 0.5s;
+    border-radius: 10px;
+}
+
+.user_input__LabelsAmount:hover {
+    background-color: #eeeeee;
+}
+
 .user_input {
     width: 80%;
     min-width: 300px;
-    min-height: 230px;
+    min-height: 170px;
     max-height: 1000px;
     background-color: #ffffff;
     border: 0;
@@ -23,7 +41,7 @@
 }
 
 .user_input:hover {
-    background-color: #c7c7c7;
+    background-color: #eeeeee;
 }
 
 .slider {

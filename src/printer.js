@@ -65,7 +65,7 @@ let chooseFont = async () => {
 }
 
 let addUserAreaListener = () => {
-    if (!localStorage.getItem("user_input")) localStorage.setItem("user_input", "");
+    if (!localStorage.getItem("user_input")) localStorage.setItem("user_input", `""`);
     let div = document.getElementById("user-input");
     div.value = JSON.parse(localStorage.getItem("user_input"));
     div.addEventListener("input", () => {

@@ -6,20 +6,21 @@ let PDFDocument = require('pdfkit');
 const { BrowserWindow } = require('@electron/remote');
 let printer = "";
 let win;
-let tempFolderPath = path.join(__dirname, "./../tempPDF").replaceAll(" ", "\\ ");
+let tempFolderPath = path.join(__dirname, './../tempPDF');
+let systemFonts = ['Courier', 'Courier-Bold', 'Helvetica-Bold', 'Times-Roman', 'Times-Bold'];
 let oFont = {
-    'Courier':'Courier',
+    'Courier': 'Courier',
     "Courier-Bold": "Courier Bold",
     "Helvetica-Bold": "Helvetica Bold",
     'Times-Roman': 'Times New Roman',
     'Times-Bold': 'Times New Roman - Bold',
-    "src/fonts/arial.ttf": "Arial",
-    "src/fonts/arial-bold.ttf": "Arial Bold",
-    "src/fonts/arial-narrow.ttf": "Arial Narrow",
-    "src/fonts/calibri.ttf": "Calibri",
-    "src/fonts/calibri-bold.ttf": "Calibri Bold",
-    "src/fonts/tahoma.ttf": "Tahoma",
-    "src/fonts/tahoma-bold.ttf": "Tahoma Bold"
+    '/fonts/arial.ttf': "Arial",
+    '/fonts/arial-bold.ttf': "Arial Bold",
+    '/fonts/arial-narrow.ttf': "Arial Narrow",
+    '/fonts/calibri.ttf': "Calibri",
+    '/fonts/calibri-bold.ttf': "Calibri Bold",
+    '/fonts/tahoma.ttf': "Tahoma",
+    '/fonts/tahoma-bold.ttf': "Tahoma Bold"
 }
 
 
@@ -37,6 +38,7 @@ window.addEventListener("DOMContentLoaded", () => {
 let addFontListeners = () => {
     if (!localStorage.getItem("fontName") || localStorage.getItem("fontName") === "") localStorage.setItem("fontName", "Courier-Bold");
     let fontNameLabel = document.getElementById("fontName--label");
+    //if 
     fontNameLabel.innerText = oFont[localStorage.getItem("fontName")];
     let fontNameSelect = document.getElementById('fontName--select');
     fontNameSelect.addEventListener("click", () => {
@@ -156,12 +158,14 @@ let printLabel = (userText, userPrinter, fontSizeValue) => {
     let doc = new PDFDocument({
         size: [38*PostScriptPoint, 19*PostScriptPoint],
         //margin: 2,//*PostScriptPoint,
-        margins: { top: 2, left: 2, right: 0, bottom: 0 },
+        margins: { top: 5, left: 2, right: 0, bottom: 0 },
         layout: "portrait"
     });
     doc.fontSize(fontSizeValue);
-    doc.font(localStorage.getItem("fontName"));
-    let PDFPath = tempFolderPath + "/temporaryPDF.pdf";
+    let theTempFont = localStorage.getItem("fontName");
+    if (!systemFonts.includes(theTempFont)) theTempFont = `${__dirname}${theTempFont}`;
+    doc.font(theTempFont);
+    let PDFPath = tempFolderPath + '/temporaryPDF.pdf';
     for (let labelText of labelsText) {
         doc.text(labelText, {align: "center"});
     }
@@ -183,10 +187,8 @@ let printLabel = (userText, userPrinter, fontSizeValue) => {
         for (let i = 0; i < localStorage.getItem("printAmount"); i++) {
         	ptp
             	.print(PDFPath, newOptions)
-            	.then((r) => {
-                    showWarning("Your label will now print.", "success");
-                });
         }
+	showWarning("Your label will now print.", "success");
     })
 }
 

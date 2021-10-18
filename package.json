@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "packager": "electron-packager . --icon=\"icon.icns\""
+    "packager": "electron-packager . \"Zebra Labels\" --icon=\"icon.icns\" --app-bundle-id=com.ttomek.zebra-labels --helper-bundle-id=com.ttomek.zebra-labels.helper --app-version=1.0.0 --build-version=2.0.7 --overwrite --osx-sign.type=distribution --osx-sign.identity=\"FMJC4ZK5Q9\" --osx-sign.hardened-runtime"
   },
   "dependencies": {
     "archiver": "^5.3.0",
